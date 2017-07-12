@@ -23,6 +23,6 @@
   "homepage": "https://github.com/fedeghe/malta-translate#readme",
   "dependencies": {
     "google-translate-api": "^2.3.0",
-    "malta": "^3.6.14"
+    "malta": "^3.6.15"
   }
 }
