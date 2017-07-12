@@ -1,6 +1,6 @@
 {
   "name": "malta-translate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "malta plugin to translate quickly anything from/into a lot of languages",
   "main": "index.js",
   "scripts": {
