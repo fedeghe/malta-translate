@@ -51,4 +51,4 @@ Cache
 in the example will be created a file in the forlder where malta is executed a file named _.malta-translate-cache-en-de.json_ which contains the cached results to avoid unnecessary requests; the outmessage of the plugin will containsome stats about hit/missed elements. Malta will create/update those files but will never delete them; if needed You have to delete em.
 
 [0]: https://www.npmjs.com/package/google-translate-api
-[langs]: [https://github.com/fedeghe/malta-translate/blob/master/langs.json]
+[langs]: https://github.com/fedeghe/malta-translate/blob/master/langs.json
