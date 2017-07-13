@@ -23,6 +23,7 @@ var fs = require('fs'),
 	};
 
 function Translator (txt, lng) {
+	
 	this.lng = {
 		from : lng.input || defaultLng.input,
 		to : lng.output || defaultLng.output
@@ -31,12 +32,6 @@ function Translator (txt, lng) {
 	this.txt = txt;
 	this.bucket = {};
 	this.bucketSize = 0;
-	this.baseQs = obj2qs({
-		client : 'gtx',
-		dt : 't',
-		sl : this.lng.from,
-		tl : this.lng.to
-	});
 
 	this.fCachePath = './.malta-translate-cache-' +this.lng.from + '-' + this.lng.to + '.json';
 	fs.openSync(this.fCachePath, 'a+');
@@ -59,11 +54,16 @@ Translator.prototype.translate = function () {
 		return this.neutral ? $1 : str;
 	});
 
+	if (self.bucketSize == 0) self.neutral = true;
+
 	return new malta.Promise(self.neutral ?
 		function (done) {done(self.txt);}
 		:
 		self.digAndTranslate.bind(self)
-	);
+	).catch(function (e) {
+		console.log("\nMalta-translate"  + ' ERROR: '.red());
+		console.log(e);
+	});
 };
 
 Translator.prototype.digAndTranslate = function (done, reject) {
@@ -96,7 +96,7 @@ Translator.prototype.digAndTranslate = function (done, reject) {
 					:
 					next (j + 1);
 			};
-			
+	
 		if (txt in self.fcache) {
 			cacheStats.cached++;
 			cb(self.fcache[txt]);
