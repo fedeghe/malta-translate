@@ -47,7 +47,14 @@ public/hello.js
 var hello="Hallo Welt",presentations="Ich heisse Federico";
 ```
 
-Cache  
+### if  
+...within a file that must be translated for example from `en` to `de` one particular word has always to be translated to japanese, regardless the input & output given parameters then is enough to mark it as:  
+
+    i18n[always japanese|ja] 
+
+
+###Cache  
+
 in the example will be created a file in the forlder where malta is executed a file named _.malta-translate-cache-en-de.json_ which contains the cached results to avoid unnecessary requests; the outmessage of the plugin will containsome stats about hit/missed elements. Malta will create/update those files but will never delete them; if needed You have to delete em.
 
 [0]: https://www.npmjs.com/package/google-translate-api

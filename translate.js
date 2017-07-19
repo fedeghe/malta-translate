@@ -38,6 +38,10 @@ function Translator (txt, lng) {
 	this.fcache = JSON.parse(fs.readFileSync(this.fCachePath, 'utf-8') || '{}');
 }
 
+function lowfirst(str){
+	return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
 Translator.prototype.translate = function () {
 	var self = this;
 
@@ -46,9 +50,13 @@ Translator.prototype.translate = function () {
 	//   key : i18n[toBeTrans]
 	// value : toBeTrans
 	// 
-	this.txt = this.txt.replace(/i18n\[([^\\\]]*)\]/g, function (str, $1) {
+	// this.txt = this.txt.replace(/i18n\[([^\\\]]*)\]/g, function (str, $1) {
+	this.txt = this.txt.replace(/i18n\[([^\\\]\|]*)(\|([^\\\]\|]*))?\]/g, function (str, $1, $2, $3) {
 		if (!(str in self.bucket)) {
-			self.bucket[str] = $1;
+			self.bucket[str] = {
+				text : $1,
+				to : $3
+			};
 			self.bucketSize++;
 		}
 		return this.neutral ? $1 : str;
@@ -77,17 +85,18 @@ Translator.prototype.digAndTranslate = function (done, reject) {
 		};
 	(function next(j) {
 
-		var txt = self.bucket[keys[j]],
+		var txt = self.bucket[keys[j]].text,
+			lowerCase = txt.match(/^[a-z]/),
 			cb = function (trans) {
 				
-				self.bucket[keys[j]] = trans;
+				self.bucket[keys[j]].text = trans;
 
 				(j === bsize-1) ?
 					(function () {
 						var i;
 						for (i in self.bucket)
 							while (self.txt.indexOf(i) >= 0)
-								self.txt = self.txt.replace(i, self.bucket[i]);
+								self.txt = self.txt.replace(i, self.bucket[i].text);
 
 						fs.writeFileSync(self.fCachePath, JSON.stringify(self.fcache), 'utf8');
 
@@ -96,7 +105,6 @@ Translator.prototype.digAndTranslate = function (done, reject) {
 					:
 					next (j + 1);
 			};
-	
 		if (txt in self.fcache) {
 			cacheStats.cached++;
 			cb(self.fcache[txt]);
@@ -104,10 +112,10 @@ Translator.prototype.digAndTranslate = function (done, reject) {
 			cacheStats.missing++;
 			translate(txt, {
 				from: self.lng.from,
-				to: self.lng.to
+				to: self.bucket[keys[j]].to || self.lng.to
 			}).then(function (res){
-				self.fcache[txt] = res.text;
-				cb(res.text);
+				self.fcache[txt] = lowerCase ? lowfirst(res.text) : res.text;
+				cb(self.fcache[txt]);
 			}).catch(err => {
 				reject(err);
 			});	
