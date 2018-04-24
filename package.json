@@ -1,6 +1,6 @@
 {
   "name": "malta-translate",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "malta plugin to translate quickly anything from/into a lot of languages",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,6 @@
   "homepage": "https://github.com/fedeghe/malta-translate#readme",
   "dependencies": {
     "google-translate-api": "^2.3.0",
-    "malta": "^3.6.15"
+    "malta": ">=3.8.3"
   }
 }
