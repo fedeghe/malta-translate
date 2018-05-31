@@ -59,13 +59,16 @@ Translator.prototype.translate = function () {
 			};
 			self.bucketSize++;
 		}
-		return this.neutral ? $1 : str;
+		return self.neutral ? $1 : str;
 	});
 
 	if (self.bucketSize == 0) self.neutral = true;
 
 	return new malta.Promise(self.neutral ?
-		function (done) {done(self.txt);}
+		function (done) {done(self.txt,{
+			cached : 0,
+			missing : 0
+		});}
 		:
 		self.digAndTranslate.bind(self)
 	).catch(function (e) {
