@@ -1,5 +1,5 @@
 var fs = require('fs'),
-	translate = require('google-translate-api'),
+	translate = require('@vitalets/google-translate-api'),
 	malta = require('malta'),
 	defaultLng = {
 		input : 'it',
