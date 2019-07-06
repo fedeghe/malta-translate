@@ -36,17 +36,14 @@ function translate(obj, options) {
 	                 * something wrong, stop malta
 	                 */
 	                self.stop();
-	            }
+                }
+                err
+                    ? reject(`Plugin ${pluginName} write error:\n${err}`)
+                    : solve(obj);
 	            
-	            /**
-	             * allright, solve, notify and let malta proceed
-	             */
-	            solve(obj);
 	            self.notifyAndUnlock(start, msg);
-	        })
-
+	        });
     	});
-
     }
 }
 /**
