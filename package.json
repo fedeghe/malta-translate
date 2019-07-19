@@ -1,28 +1,28 @@
 {
-  "name": "malta-translate",
-  "version": "1.0.11",
-  "description": "malta plugin to translate quickly anything from/into a lot of languages",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fedeghe/malta-translate.git"
-  },
-  "keywords": [
-    "malta",
-    "malta",
-    "translate"
-  ],
-  "author": "Federico Ghedina <federico.ghedina@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/fedeghe/malta-translate/issues"
-  },
-  "homepage": "https://github.com/fedeghe/malta-translate#readme",
-  "dependencies": {
-    "@vitalets/google-translate-api": "^2.8.0",
-    "malta": ">=3.8.14"
-  }
+    "name": "malta-translate",
+    "version": "1.0.11",
+    "description": "malta plugin to translate quickly anything from/into a lot of languages",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/fedeghe/malta-translate.git"
+    },
+    "keywords": [
+        "malta",
+        "malta",
+        "translate"
+    ],
+    "author": "Federico Ghedina <fedeghe@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/fedeghe/malta-translate/issues"
+    },
+    "homepage": "https://github.com/fedeghe/malta-translate#readme",
+    "dependencies": {
+        "@vitalets/google-translate-api": "^2.8.0",
+        "malta": ">=3.8.14"
+    }
 }
