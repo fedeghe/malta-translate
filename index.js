@@ -1,7 +1,7 @@
 /**
  * load dependencies and whatever needed
  */
-var trans = require('./translate.js'),
+const trans = require('./translate.js'),
     path = require('path'),
     fs = require('fs');
 
@@ -17,17 +17,17 @@ function translate(obj, options) {
      * the next plugin will be invoked with an updated obj
      * only when the solve function is called passing the updated obj
      */
-    return function (solve, reject) {
+    return (solve, reject) => {
 
-    	trans.translate(obj.content, options).then(function (ret, reqNum){
-    		obj.content = ret;
-	        /**
+        trans.translate(obj.content, options).then(({content, stats}) => {
+            obj.content = content;
+            /**
 	         * free to be async
 	         */
-	        fs.writeFile(obj.name, obj.content, function (err) {
+	        fs.writeFile(obj.name, obj.content, err => {
 	            if (err == null) {
 	                msg = 'plugin ' + pluginName.white() + ' wrote ' + obj.name +' (' + self.getSize(obj.name) + ')'
-	                	+ "\ntranslation stats: " + reqNum.cached + " cached; " + reqNum.missing + " missing";
+	                	+ "\ntranslation stats: " + stats.cached + " cached; " + stats.missing + " missing";
 	            } else {
 	                console.log('[ERROR] '.red() + pluginName + ' says:');
 	                console.dir(err);
@@ -43,7 +43,7 @@ function translate(obj, options) {
 	            
 	            self.notifyAndUnlock(start, msg);
 	        });
-    	});
+        });
     }
 }
 /**

@@ -1,35 +1,28 @@
-var fs = require('fs'),
+const fs = require('fs'),
 	translate = require('@vitalets/google-translate-api'),
-	malta = require('malta'),
 	defaultLng = {
 		input : 'it',
 		output : 'en'
-	},
-	oReduce = function(o, fn) {
-		'use strict';
-		var ret = '',
-			j;
-		for (j in o) {
-			if (o.hasOwnProperty(j)) {
-				ret += fn(o, j, ret);
-			}
-		}
-		return ret;
-	},
-	obj2qs = function (obj) {
-		return oReduce(obj, function(o, i, r) {
-			return ((r ? '&' : '?') + encodeURIComponent(i) + '=' + encodeURIComponent(o[i])).replace(/\'/g, '%27');
-		});
-	};
+    };
 
-function Translator (txt, lng) {
-	
-	this.lng = {
+function lowfirst(str){
+    return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
+function Translator(content, lng, solve, reject) {
+    this.content = content;
+    this.solve = solve;
+    this.reject = reject;
+    this.stats = {
+        cached: 0,
+        missing: 0
+    }
+
+    this.lng = {
 		from : lng.input || defaultLng.input,
 		to : lng.output || defaultLng.output
 	};
 	this.neutral = this.lng.from === this.lng.to;
-	this.txt = txt;
 	this.bucket = {};
 	this.bucketSize = 0;
 
@@ -38,20 +31,14 @@ function Translator (txt, lng) {
 	this.fcache = JSON.parse(fs.readFileSync(this.fCachePath, 'utf-8') || '{}');
 }
 
-function lowfirst(str){
-	return str.charAt(0).toLowerCase() + str.slice(1);
-}
-
-Translator.prototype.translate = function () {
-	var self = this;
-
-	// Just collect 
+Translator.prototype.collect = function () {
+    const self = this;
+    // Just collect 
 	// i18n data in bucket
 	//   key : i18n[toBeTrans]
 	// value : toBeTrans
 	// 
-	// this.txt = this.txt.replace(/i18n\[([^\\\]]*)\]/g, function (str, $1) {
-	this.txt = this.txt.replace(/i18n\[([^\\\]\|]*)(\|([^\\\]\|]*))?\]/g, function (str, $1, $2, $3) {
+	this.content = this.content.replace(/i18n\[([^\\\]\|]*)(\|([^\\\]\|]*))?\]/g, function (str, $1, $2, $3) {
 		if (!(str in self.bucket)) {
 			self.bucket[str] = {
 				text : $1,
@@ -63,32 +50,26 @@ Translator.prototype.translate = function () {
 	});
 
 	if (self.bucketSize == 0) self.neutral = true;
-
-	return new malta.Promise(self.neutral ?
-		function (done) {done(self.txt,{
-			cached : 0,
-			missing : 0
-		});}
-		:
-		self.digAndTranslate.bind(self)
-	).catch(function (e) {
-		console.log("\nMalta-translate"  + ' ERROR: '.red());
-		console.log(e);
-	});
+    return this;
 };
 
-Translator.prototype.digAndTranslate = function (done, reject) {
-	var self = this,
-		i = 0,
-		bsize = this.bucketSize,
-		keys = Object.keys(self.bucket),
-		cacheStats = {
-			cached : 0,
-			missing : 0
-		};
+Translator.prototype.translate = function () {
+    const self = this,
+        bsize = this.bucketSize,
+        keys = Object.keys(self.bucket);
+
+    if (this.neutral) {
+        this.solve({
+            content: this.content,
+            stats: this.stats
+        });
+    }
+
+    let i = 0;
+		
 	(function next(j) {
 
-		var txt = self.bucket[keys[j]].text,
+		const txt = self.bucket[keys[j]].text,
 			lowerCase = txt.match(/^[a-z]/),
 			cb = function (trans) {
 				
@@ -97,22 +78,23 @@ Translator.prototype.digAndTranslate = function (done, reject) {
 				(j === bsize-1) ?
 					(function () {
 						var i;
-						for (i in self.bucket)
-							while (self.txt.indexOf(i) >= 0)
-								self.txt = self.txt.replace(i, self.bucket[i].text);
+						for (i in self.bucket) {
+							while (self.content.indexOf(i) >= 0) {
+                                self.content = self.content.replace(i, self.bucket[i].text);
+                            }
+                        }
 
 						fs.writeFileSync(self.fCachePath, JSON.stringify(self.fcache), 'utf8');
-
-						done(self.txt, cacheStats);
+						self.solve({content: self.content, stats: self.stats});
 					})()
 					:
 					next (j + 1);
 			};
 		if (txt in self.fcache) {
-			cacheStats.cached++;
+			self.stats.cached++;
 			cb(self.fcache[txt]);
 		} else {
-			cacheStats.missing++;
+			self.stats.missing++;
 			translate(txt, {
 				from: self.lng.from,
 				to: self.bucket[keys[j]].to || self.lng.to
@@ -120,14 +102,17 @@ Translator.prototype.digAndTranslate = function (done, reject) {
 				self.fcache[txt] = lowerCase ? lowfirst(res.text) : res.text;
 				cb(self.fcache[txt]);
 			}).catch(err => {
-				reject(err);
+				self.reject(err);
 			});	
 		}
 	})(i);	
+
 };
 
 module.exports = {
-	translate : function (txt, lang) {
-		return (new Translator(txt, lang)).translate();
-	}
+    translate: (content, lng) => {
+        return new Promise((solve, reject) => {
+            new Translator(content, lng, solve, reject).collect().translate()
+        });
+    }
 };

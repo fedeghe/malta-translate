@@ -59,3 +59,6 @@ in the example will be created a file in the forlder where malta is executed a f
 
 [0]: https://www.npmjs.com/package/@vitalets/google-translate-api
 [langs]: https://github.com/fedeghe/malta-translate/blob/master/langs.json
+
+### Backward compatibility
+Malta-translate versions < `1.1` need malta < `4.1`
