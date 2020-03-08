@@ -1,6 +1,5 @@
 ---
 [![npm version](https://badge.fury.io/js/malta-translate.svg)](http://badge.fury.io/js/malta-translate)
-[![Dependencies](https://david-dm.org/fedeghe/malta-translate.svg)](https://david-dm.org/fedeghe/malta-translate)
 [![npm downloads](https://img.shields.io/npm/dt/malta-translate.svg)](https://npmjs.org/package/malta-translate)
 [![npm downloads](https://img.shields.io/npm/dm/malta-translate.svg)](https://npmjs.org/package/malta-translate)  
 ---  
