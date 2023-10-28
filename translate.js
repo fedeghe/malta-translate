@@ -1,5 +1,5 @@
 const fs = require('fs'),
-	translate = require('@vitalets/google-translate-api'),
+	trans = require('@vitalets/google-translate-api'),
 	defaultLng = {
 		input : 'it',
 		output : 'en'
@@ -95,7 +95,7 @@ Translator.prototype.translate = function () {
 			cb(self.fcache[txt]);
 		} else {
 			self.stats.missing++;
-			translate(txt, {
+			trans.translate(txt, {
 				from: self.lng.from,
 				to: self.bucket[keys[j]].to || self.lng.to
 			}).then(function (res){
