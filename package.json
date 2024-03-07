@@ -22,7 +22,6 @@
     },
     "homepage": "https://github.com/fedeghe/malta-translate#readme",
     "dependencies": {
-        "@vitalets/google-translate-api": "^9.2.0",
-        "http-proxy-agent": "^7.0.2"
+        "@vitalets/google-translate-api": "^9.2.0"
     }
 }
