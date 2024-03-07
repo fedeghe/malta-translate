@@ -1,5 +1,6 @@
 const fs = require('fs'),
 	trans = require('@vitalets/google-translate-api'),
+	httpProxyAgent = require('http-proxy-agent'),
 	defaultLng = {
 		input : 'it',
 		output : 'en'
@@ -71,6 +72,9 @@ Translator.prototype.translate = function () {
 
 		const txt = self.bucket[keys[j]].text,
 			lowerCase = txt.match(/^[a-z]/),
+			rndIp = `${100 + ~~(Math.random()*200)}.${100 + ~~(Math.random()*200)}.${100 + ~~(Math.random()*200)}.${100 + ~~(Math.random()*200)}`, // 168.63.76.32
+			port = 1024 + ~~(Math.random()*2000),  // 3128
+			agent = new HttpProxyAgent(`http://${rndIp}:${port}`)
 			cb = function (trans) {
 				
 				self.bucket[keys[j]].text = trans;
@@ -97,7 +101,10 @@ Translator.prototype.translate = function () {
 			self.stats.missing++;
 			trans.translate(txt, {
 				from: self.lng.from,
-				to: self.bucket[keys[j]].to || self.lng.to
+				to: self.bucket[keys[j]].to || self.lng.to,
+				fetchOptions: {
+					agent
+				}
 			}).then(function (res){
 				self.fcache[txt] = lowerCase ? lowfirst(res.text) : res.text;
 				cb(self.fcache[txt]);
