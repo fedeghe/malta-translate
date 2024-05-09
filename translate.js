@@ -5,9 +5,7 @@ const fs = require('fs'),
 		output : 'en'
     };
 
-function lowfirst(str){
-    return str.charAt(0).toLowerCase() + str.slice(1);
-}
+const lowfirst = str => str.charAt(0).toLowerCase() + str.slice(1);
 
 function Translator(content, lng, solve, reject) {
     this.content = content;
@@ -110,9 +108,8 @@ Translator.prototype.translate = function () {
 };
 
 module.exports = {
-    translate: (content, lng) => {
-        return new Promise((solve, reject) => {
+    translate: (content, lng) => 
+		new Promise((solve, reject) => {
             new Translator(content, lng, solve, reject).collect().translate()
-        });
-    }
+        })
 };
