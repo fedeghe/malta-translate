@@ -101,6 +101,7 @@ Translator.prototype.translate = function () {
 				cb(self.fcache[txt]);
 			}).catch(err => {
 				self.reject(err);
+				console.log(err.message);
 			});	
 		}
 	})(i);	

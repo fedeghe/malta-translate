@@ -55,11 +55,11 @@ var hello="Hallo Welt",
 
 ### Cache  
 
-The first thing the plugin checks before actually submitting any transation request (for example from `it` to `en`), is the presence of a `.malta-translate-cache-it-en.json` file in the folder where malta is started, in case the file is present it might contain already obtained translations for the needed sentences. In cast the file is not found it will be created and in case is found but the translation si not, then will be added. This allows to minimize the requests.
+The first thing the plugin checks before actually submitting any transation request (for example from `it` to `en`), is the presence of a `.malta-translate-cache-it-en.json` file in the folder where malta is started, in case the file is present it might contain already obtained translations for the needed sentences. In cast the file is not found it will be created and in case is found but the translation is not, then will be added. This allows to minimize the requests number.
 
 
 ### Limits & no limits
-All translations in the end come from goo9l€, and it does not like bursts of incoming requests from the same IP. So in case translations do not flow out correctly then do what you can to change your IP.
+All translations in the end come from goo9l€, and it does not really like bursts of incoming requests from the same IP, eventually not provding translatiions. So in case translations do not flow out correctly then do what you can to change your IP address.
 
 
 [0]: https://www.npmjs.com/package/@vitalets/google-translate-api
