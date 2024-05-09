@@ -7,8 +7,9 @@
 This plugin can be used on: all files
 
 Options :  
-    - input : default 'it' ... yes Italian! but You can specify any language supported by [@vitalets/google-translate-api][0]  ([here is the list][langs])
-    - output : default 'en' but You can specify any language supported by [@vitalets/google-translate-api][0] ([here is the list][langs])
+- **input** : default 'it' ... yes Italian! but You can specify any language supported by [@vitalets/google-translate-api][0]  ([here is the list][langs])
+
+- **output** : default 'en' but You can specify any language supported by [@vitalets/google-translate-api][0] ([here is the list][langs])
 
 
 Sample usage:  
